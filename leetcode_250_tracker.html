@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LeetCode 250 Tracker</title>
+<style>
+  :root{
+    --bg:#F6F5F1; --panel:#FFFFFF; --border:#DEDBD2; --border-strong:#C7C3B6;
+    --text:#22221F; --text-2:#5B584F; --text-muted:#8C887C;
+    --accent:#1F7A63; --accent-bg:#E4F1EC;
+    --easy:#2E8B57; --easy-bg:#E4F3EA;
+    --med:#B8860B; --med-bg:#FBF1DC;
+    --hard:#B23A3A; --hard-bg:#FBE7E5;
+    --mono:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#15171A; --panel:#1D2024; --border:#2C3036; --border-strong:#3C4248;
+      --text:#E9E8E4; --text-2:#B4B1A9; --text-muted:#7C7A74;
+      --accent:#3FCBA8; --accent-bg:#122A24;
+      --easy:#3FCB86; --easy-bg:#12261C;
+      --med:#E0B23D; --med-bg:#2A2211;
+      --hard:#E06A63; --hard-bg:#2A1614;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
+  .wrap{max-width:760px;margin:0 auto;padding:24px 20px 60px;}
+  header{position:sticky;top:0;background:var(--bg);padding:8px 0 16px;z-index:5;}
+  h1{font-size:20px;font-weight:600;margin:0 0 4px;letter-spacing:-0.01em;}
+  .sub{color:var(--text-2);font-size:13px;margin:0 0 16px;}
+  .progress-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .bar{flex:1;height:8px;border-radius:4px;background:var(--border);overflow:hidden;}
+  .bar-fill{height:100%;background:var(--accent);width:0%;transition:width .25s ease;}
+  .pct{font-family:var(--mono);font-size:13px;color:var(--text-2);min-width:64px;text-align:right;}
+  input[type=text]{width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--text);font-size:14px;outline:none;}
+  input[type=text]:focus{border-color:var(--accent);}
+  .filters{display:flex;gap:6px;margin-top:10px;}
+  .chip{padding:5px 11px;border-radius:16px;border:1px solid var(--border);background:var(--panel);color:var(--text-2);font-size:12px;cursor:pointer;user-select:none;}
+  .chip.active{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
+  details{background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+  summary{list-style:none;cursor:pointer;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600;}
+  summary::-webkit-details-marker{display:none;}
+  summary .cat-count{font-family:var(--mono);font-weight:400;font-size:12px;color:var(--text-muted);}
+  .arrow{transition:transform .15s ease;color:var(--text-muted);}
+  details[open] .arrow{transform:rotate(90deg);}
+  .rows{border-top:1px solid var(--border);}
+  .row{display:flex;align-items:center;gap:11px;padding:10px 16px;border-bottom:1px solid var(--border);}
+  .row:last-child{border-bottom:none;}
+  .row.hidden{display:none;}
+  .row input[type=checkbox]{width:17px;height:17px;flex:none;accent-color:var(--accent);cursor:pointer;}
+  .row a{color:var(--text);text-decoration:none;font-family:var(--mono);font-size:13.5px;flex:1;}
+  .row a:hover{color:var(--accent);text-decoration:underline;}
+  .row.done a{color:var(--text-muted);text-decoration:line-through;}
+  .diff{font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px;flex:none;}
+  .diff.E{color:var(--easy);background:var(--easy-bg);}
+  .diff.M{color:var(--med);background:var(--med-bg);}
+  .diff.H{color:var(--hard);background:var(--hard-bg);}
+  .empty{padding:24px;text-align:center;color:var(--text-muted);font-size:13px;}
+  .toolbar{display:flex;gap:8px;margin-top:14px;}
+  button.reset{padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--text-2);font-size:12px;cursor:pointer;}
+  button.reset:hover{border-color:var(--border-strong);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>LeetCode 250 Tracker</h1>
+    <p class="sub">Check off problems as you solve them. Progress is saved automatically to your account.</p>
+    <div class="progress-row">
+      <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+      <div class="pct" id="pctLabel">0 / 250</div>
+    </div>
+    <input type="text" id="search" placeholder="Search a problem name...">
+    <div class="filters" id="filters">
+      <div class="chip active" data-f="all">All</div>
+      <div class="chip" data-f="E">Easy</div>
+      <div class="chip" data-f="M">Medium</div>
+      <div class="chip" data-f="H">Hard</div>
+      <div class="chip" data-f="unsolved">Unsolved</div>
+    </div>
+    <div class="toolbar">
+      <button class="reset" id="resetBtn">Reset all progress</button>
+    </div>
+  </header>
+  <div id="list"></div>
+</div>
+
+<script>
+const categories = [
+["Arrays & Hashing",[["Two Sum","E","two-sum"],["Contains Duplicate","E","contains-duplicate"],["Valid Anagram","E","valid-anagram"],["Group Anagrams","M","group-anagrams"],["Top K Frequent Elements","M","top-k-frequent-elements"],["Product of Array Except Self","M","product-of-array-except-self"],["Valid Sudoku","M","valid-sudoku"],["Encode and Decode Strings","M","encode-and-decode-strings"],["Longest Consecutive Sequence","M","longest-consecutive-sequence"],["Majority Element","E","majority-element"],["Subarray Sum Equals K","M","subarray-sum-equals-k"],["Sort Colors","M","sort-colors"],["Set Matrix Zeroes","M","set-matrix-zeroes"],["Rotate Image","M","rotate-image"],["Spiral Matrix","M","spiral-matrix"],["Best Time to Buy and Sell Stock","E","best-time-to-buy-and-sell-stock"],["Move Zeroes","E","move-zeroes"],["Find All Duplicates in an Array","M","find-all-duplicates-in-an-array"],["First Missing Positive","H","first-missing-positive"],["Insert Delete GetRandom O(1)","M","insert-delete-getrandom-o1"]]],
+["Two Pointers",[["Valid Palindrome","E","valid-palindrome"],["Two Sum II - Input Array Is Sorted","M","two-sum-ii-input-array-is-sorted"],["3Sum","M","3sum"],["Container With Most Water","M","container-with-most-water"],["Trapping Rain Water","H","trapping-rain-water"],["Sort an Array","M","sort-an-array"],["Remove Duplicates from Sorted Array","E","remove-duplicates-from-sorted-array"],["4Sum","M","4sum"],["Sort Colors (Dutch flag)","M","sort-colors"],["Boats to Save People","M","boats-to-save-people"]]],
+["Sliding Window",[["Best Time to Buy and Sell Stock (window)","E","best-time-to-buy-and-sell-stock"],["Longest Substring Without Repeating Characters","M","longest-substring-without-repeating-characters"],["Longest Repeating Character Replacement","M","longest-repeating-character-replacement"],["Permutation in String","M","permutation-in-string"],["Minimum Window Substring","H","minimum-window-substring"],["Sliding Window Maximum","H","sliding-window-maximum"],["Fruit Into Baskets","M","fruit-into-baskets"],["Max Consecutive Ones III","M","max-consecutive-ones-iii"],["Subarrays with K Different Integers","H","subarrays-with-k-different-integers"],["Minimum Size Subarray Sum","M","minimum-size-subarray-sum"]]],
+["Stack",[["Valid Parentheses","E","valid-parentheses"],["Min Stack","M","min-stack"],["Evaluate Reverse Polish Notation","M","evaluate-reverse-polish-notation"],["Generate Parentheses","M","generate-parentheses"],["Daily Temperatures","M","daily-temperatures"],["Car Fleet","M","car-fleet"],["Largest Rectangle in Histogram","H","largest-rectangle-in-histogram"],["Asteroid Collision","M","asteroid-collision"],["Decode String","M","decode-string"],["Next Greater Element I","E","next-greater-element-i"],["Basic Calculator II","M","basic-calculator-ii"],["Simplify Path","M","simplify-path"]]],
+["Binary Search",[["Binary Search","E","binary-search"],["Search a 2D Matrix","M","search-a-2d-matrix"],["Koko Eating Bananas","M","koko-eating-bananas"],["Find Minimum in Rotated Sorted Array","M","find-minimum-in-rotated-sorted-array"],["Search in Rotated Sorted Array","M","search-in-rotated-sorted-array"],["Time Based Key-Value Store","M","time-based-key-value-store"],["Median of Two Sorted Arrays","H","median-of-two-sorted-arrays"],["Split Array Largest Sum","H","split-array-largest-sum"],["Find Peak Element","M","find-peak-element"],["Capacity To Ship Packages Within D Days","M","capacity-to-ship-packages-within-d-days"]]],
+["Linked List",[["Reverse Linked List","E","reverse-linked-list"],["Merge Two Sorted Lists","E","merge-two-sorted-lists"],["Reorder List","M","reorder-list"],["Remove Nth Node From End of List","M","remove-nth-node-from-end-of-list"],["Copy List with Random Pointer","M","copy-list-with-random-pointer"],["Add Two Numbers","M","add-two-numbers"],["Linked List Cycle","E","linked-list-cycle"],["Find the Duplicate Number","M","find-the-duplicate-number"],["LRU Cache","M","lru-cache"],["Merge k Sorted Lists","H","merge-k-sorted-lists"],["Reverse Nodes in k-Group","H","reverse-nodes-in-k-group"],["Sort List","M","sort-list"],["LFU Cache","H","lfu-cache"],["Palindrome Linked List","E","palindrome-linked-list"],["Flatten a Multilevel Doubly Linked List","M","flatten-a-multilevel-doubly-linked-list"]]],
+["Trees",[["Invert Binary Tree","E","invert-binary-tree"],["Maximum Depth of Binary Tree","E","maximum-depth-of-binary-tree"],["Diameter of Binary Tree","E","diameter-of-binary-tree"],["Balanced Binary Tree","E","balanced-binary-tree"],["Same Tree","E","same-tree"],["Subtree of Another Tree","E","subtree-of-another-tree"],["Lowest Common Ancestor of a BST","M","lowest-common-ancestor-of-a-binary-search-tree"],["Lowest Common Ancestor of a Binary Tree","M","lowest-common-ancestor-of-a-binary-tree"],["Binary Tree Level Order Traversal","M","binary-tree-level-order-traversal"],["Binary Tree Right Side View","M","binary-tree-right-side-view"],["Count Good Nodes in Binary Tree","M","count-good-nodes-in-binary-tree"],["Validate Binary Search Tree","M","validate-binary-search-tree"],["Kth Smallest Element in a BST","M","kth-smallest-element-in-a-bst"],["Construct Binary Tree from Preorder and Inorder","M","construct-binary-tree-from-preorder-and-inorder-traversal"],["Binary Tree Maximum Path Sum","H","binary-tree-maximum-path-sum"],["Serialize and Deserialize Binary Tree","H","serialize-and-deserialize-binary-tree"],["Path Sum","E","path-sum"],["Path Sum II","M","path-sum-ii"],["Binary Tree Zigzag Level Order Traversal","M","binary-tree-zigzag-level-order-traversal"],["Flatten Binary Tree to Linked List","M","flatten-binary-tree-to-linked-list"],["Populating Next Right Pointers in Each Node","M","populating-next-right-pointers-in-each-node"],["Vertical Order Traversal of a Binary Tree","H","vertical-order-traversal-of-a-binary-tree"],["Boundary of Binary Tree","M","boundary-of-binary-tree"]]],
+["Tries",[["Implement Trie (Prefix Tree)","M","implement-trie-prefix-tree"],["Design Add and Search Words Data Structure","M","design-add-and-search-words-data-structure"],["Word Search II","H","word-search-ii"],["Replace Words","M","replace-words"],["Longest Word in Dictionary","M","longest-word-in-dictionary"]]],
+["Heap / Priority Queue",[["Kth Largest Element in an Array","M","kth-largest-element-in-an-array"],["Kth Largest Element in a Stream","E","kth-largest-element-in-a-stream"],["Last Stone Weight","E","last-stone-weight"],["K Closest Points to Origin","M","k-closest-points-to-origin"],["Task Scheduler","M","task-scheduler"],["Design Twitter","M","design-twitter"],["Find Median from Data Stream","H","find-median-from-data-stream"],["Top K Frequent Words","M","top-k-frequent-words"],["Sort Characters By Frequency","M","sort-characters-by-frequency"],["Reorganize String","M","reorganize-string"],["Meeting Rooms II","M","meeting-rooms-ii"],["Merge k Sorted Lists (heap)","H","merge-k-sorted-lists"]]],
+["Backtracking",[["Subsets","M","subsets"],["Subsets II","M","subsets-ii"],["Combination Sum","M","combination-sum"],["Combination Sum II","M","combination-sum-ii"],["Permutations","M","permutations"],["Permutations II","M","permutations-ii"],["Word Search","M","word-search"],["Palindrome Partitioning","M","palindrome-partitioning"],["Letter Combinations of a Phone Number","M","letter-combinations-of-a-phone-number"],["N-Queens","H","n-queens"],["N-Queens II","H","n-queens-ii"],["Sudoku Solver","H","sudoku-solver"],["Combinations","M","combinations"],["Restore IP Addresses","M","restore-ip-addresses"]]],
+["Graphs",[["Number of Islands","M","number-of-islands"],["Clone Graph","M","clone-graph"],["Max Area of Island","M","max-area-of-island"],["Pacific Atlantic Water Flow","M","pacific-atlantic-water-flow"],["Surrounded Regions","M","surrounded-regions"],["Rotting Oranges","M","rotting-oranges"],["Walls and Gates","M","walls-and-gates"],["Course Schedule","M","course-schedule"],["Course Schedule II","M","course-schedule-ii"],["Redundant Connection","M","redundant-connection"],["Number of Connected Components in an Undirected Graph","M","number-of-connected-components-in-an-undirected-graph"],["Graph Valid Tree","M","graph-valid-tree"],["Word Ladder","H","word-ladder"],["Is Graph Bipartite?","M","is-graph-bipartite"],["Accounts Merge","M","accounts-merge"],["Evaluate Division","M","evaluate-division"],["Shortest Path in Binary Matrix","M","shortest-path-in-binary-matrix"],["01 Matrix","M","01-matrix"],["Snakes and Ladders","M","snakes-and-ladders"]]],
+["Advanced Graphs",[["Reconstruct Itinerary","H","reconstruct-itinerary"],["Min Cost to Connect All Points","M","min-cost-to-connect-all-points"],["Network Delay Time","M","network-delay-time"],["Swim in Rising Water","H","swim-in-rising-water"],["Alien Dictionary","H","alien-dictionary"],["Cheapest Flights Within K Stops","M","cheapest-flights-within-k-stops"],["Path with Minimum Effort","M","path-with-minimum-effort"],["Number of Islands II","H","number-of-islands-ii"],["Critical Connections in a Network","H","critical-connections-in-a-network"]]],
+["1-D Dynamic Programming",[["Climbing Stairs","E","climbing-stairs"],["Min Cost Climbing Stairs","E","min-cost-climbing-stairs"],["House Robber","M","house-robber"],["House Robber II","M","house-robber-ii"],["Longest Palindromic Substring","M","longest-palindromic-substring"],["Palindromic Substrings","M","palindromic-substrings"],["Decode Ways","M","decode-ways"],["Coin Change","M","coin-change"],["Coin Change II","M","coin-change-ii"],["Maximum Product Subarray","M","maximum-product-subarray"],["Word Break","M","word-break"],["Longest Increasing Subsequence","M","longest-increasing-subsequence"],["Partition Equal Subset Sum","M","partition-equal-subset-sum"],["Combination Sum IV","M","combination-sum-iv"],["Perfect Squares","M","perfect-squares"],["Integer Break","M","integer-break"],["Jump Game","M","jump-game"],["Jump Game II","M","jump-game-ii"]]],
+["2-D Dynamic Programming",[["Unique Paths","M","unique-paths"],["Unique Paths II","M","unique-paths-ii"],["Minimum Path Sum","M","minimum-path-sum"],["Longest Common Subsequence","M","longest-common-subsequence"],["Longest Palindromic Subsequence","M","longest-palindromic-subsequence"],["Edit Distance","H","edit-distance"],["Distinct Subsequences","H","distinct-subsequences"],["Best Time to Buy/Sell Stock with Cooldown","M","best-time-to-buy-and-sell-stock-with-cooldown"],["Target Sum","M","target-sum"],["Interleaving String","M","interleaving-string"],["Regular Expression Matching","H","regular-expression-matching"],["Wildcard Matching","H","wildcard-matching"],["Maximal Square","M","maximal-square"],["Burst Balloons","H","burst-balloons"]]],
+["Greedy",[["Maximum Subarray","M","maximum-subarray"],["Jump Game (greedy)","M","jump-game"],["Gas Station","M","gas-station"],["Hand of Straights","M","hand-of-straights"],["Merge Triplets to Form Target Triplet","M","merge-triplets-to-form-target-triplet"],["Partition Labels","M","partition-labels"],["Valid Parenthesis String","M","valid-parenthesis-string"],["Candy","H","candy"],["Non-overlapping Intervals","M","non-overlapping-intervals"]]],
+["Intervals",[["Insert Interval","M","insert-interval"],["Merge Intervals","M","merge-intervals"],["Non-overlapping Intervals","M","non-overlapping-intervals"],["Meeting Rooms","E","meeting-rooms"],["Meeting Rooms II","M","meeting-rooms-ii"],["Minimum Interval to Include Each Query","H","minimum-interval-to-include-each-query"],["My Calendar I","M","my-calendar-i"]]],
+["Math & Geometry",[["Rotate Image (geometry)","M","rotate-image"],["Spiral Matrix (geometry)","M","spiral-matrix"],["Set Matrix Zeroes (geometry)","M","set-matrix-zeroes"],["Happy Number","E","happy-number"],["Plus One","E","plus-one"],["Pow(x, n)","M","powx-n"],["Multiply Strings","M","multiply-strings"],["Detect Squares","M","detect-squares"],["Reverse Integer","M","reverse-integer"],["Roman to Integer","E","roman-to-integer"],["Integer to Roman","M","integer-to-roman"]]],
+["Bit Manipulation",[["Single Number","E","single-number"],["Number of 1 Bits","E","number-of-1-bits"],["Counting Bits","E","counting-bits"],["Reverse Bits","E","reverse-bits"],["Missing Number","E","missing-number"],["Sum of Two Integers","M","sum-of-two-integers"],["Bitwise AND of Numbers Range","M","bitwise-and-of-numbers-range"]]],
+["Strings (Extra)",[["Longest Common Prefix","E","longest-common-prefix"],["String to Integer (atoi)","M","string-to-integer-atoi"],["Group Shifted Strings","M","group-shifted-strings"],["Zigzag Conversion","M","zigzag-conversion"],["Text Justification","H","text-justification"],["Minimum Remove to Make Valid Parentheses","M","minimum-remove-to-make-valid-parentheses"],["Valid Palindrome II","E","valid-palindrome-ii"]]],
+["Design",[["Design HashMap","E","design-hashmap"],["Design HashSet","E","design-hashset"],["Design Underground System","M","design-underground-system"],["Design Circular Queue","M","design-circular-queue"],["Design File System","M","design-file-system"],["Design In-Memory File System","H","design-in-memory-file-system"],["Design Search Autocomplete System","H","design-search-autocomplete-system"],["Insert Delete GetRandom O(1) - Duplicates allowed","H","insert-delete-getrandom-o1-duplicates-allowed"],["All O`one Data Structure","H","all-oone-data-structure"]]],
+["Union-Find / Matrix Extras",[["Number of Provinces","M","number-of-provinces"],["Satisfiability of Equality Equations","M","satisfiability-of-equality-equations"],["Rank Transform of a Matrix","H","rank-transform-of-a-matrix"],["Longest Increasing Path in a Matrix","H","longest-increasing-path-in-a-matrix"],["Word Ladder II","H","word-ladder-ii"],["Sliding Puzzle","H","sliding-puzzle"],["Shortest Bridge","M","shortest-bridge"],["K-th Smallest Prime Fraction","H","k-th-smallest-prime-fraction"],["Basic Calculator","H","basic-calculator"]]]
+];
+
+let solved = {};
+let currentFilter = "all";
+let searchTerm = "";
+const TOTAL = categories.reduce((s,c)=>s+c[1].length,0);
+
+async function loadProgress(){
+  try{
+    const res = await window.storage.get('lc250-progress', false);
+    if(res && res.value) solved = JSON.parse(res.value);
+  }catch(e){ solved = {}; }
+  render();
+}
+async function saveProgress(){
+  try{ await window.storage.set('lc250-progress', JSON.stringify(solved), false); }
+  catch(e){ console.error('Save failed', e); }
+}
+
+function render(){
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  let doneTotal = 0;
+
+  categories.forEach((cat, ci)=>{
+    const [catName, problems] = cat;
+    let catDone = 0;
+    const rows = problems.map((p, pi)=>{
+      const id = ci+'-'+pi;
+      const isDone = !!solved[id];
+      if(isDone){ catDone++; doneTotal++; }
+      const matchesSearch = p[0].toLowerCase().includes(searchTerm);
+      const matchesFilter = currentFilter==='all' ? true
+        : currentFilter==='unsolved' ? !isDone
+        : p[1]===currentFilter;
+      const visible = matchesSearch && matchesFilter;
+      return {id, p, isDone, visible};
+    });
+
+    const visibleRows = rows.filter(r=>r.visible);
+    if(visibleRows.length===0) return;
+
+    const details = document.createElement('details');
+    details.open = searchTerm.length>0 || currentFilter!=='all';
+    const summary = document.createElement('summary');
+    summary.innerHTML = '<span>'+catName+'</span><span class="cat-count">'+catDone+' / '+problems.length+' <span class="arrow">&#8250;</span></span>';
+    details.appendChild(summary);
+
+    const rowsDiv = document.createElement('div');
+    rowsDiv.className = 'rows';
+    rows.forEach(r=>{
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'row' + (r.isDone?' done':'') + (r.visible?'':' hidden');
+      const diffLabel = r.p[1]==='E'?'Easy':r.p[1]==='M'?'Medium':'Hard';
+      rowDiv.innerHTML =
+        '<input type="checkbox" '+(r.isDone?'checked':'')+' data-id="'+r.id+'">'+
+        '<a href="https://leetcode.com/problems/'+r.p[2]+'/" target="_blank" rel="noopener">'+r.p[0]+'</a>'+
+        '<span class="diff '+r.p[1]+'">'+diffLabel+'</span>';
+      rowsDiv.appendChild(rowDiv);
+    });
+    details.appendChild(rowsDiv);
+    list.appendChild(details);
+  });
+
+  if(list.children.length===0){
+    list.innerHTML = '<div class="empty">No problems match your search or filter.</div>';
+  }
+
+  document.getElementById('barFill').style.width = ((doneTotal/TOTAL)*100).toFixed(1)+'%';
+  document.getElementById('pctLabel').textContent = doneTotal+' / '+TOTAL;
+
+  list.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+    cb.addEventListener('change', (e)=>{
+      const id = e.target.getAttribute('data-id');
+      if(e.target.checked) solved[id] = true; else delete solved[id];
+      saveProgress();
+      render();
+    });
+  });
+}
+
+document.getElementById('search').addEventListener('input', (e)=>{
+  searchTerm = e.target.value.toLowerCase();
+  render();
+});
+
+document.getElementById('filters').addEventListener('click', (e)=>{
+  const chip = e.target.closest('.chip');
+  if(!chip) return;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  currentFilter = chip.getAttribute('data-f');
+  render();
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(confirm('Clear all solved progress? This cannot be undone.')){
+    solved = {};
+    saveProgress();
+    render();
+  }
+});
+
+loadProgress();
+</script>
+</body>
+</html>
