@@ -8,28 +8,28 @@
 ---
 
 ## 1. Arrays & Hashing
-| # | Problem | Difficulty | Link |
-|---|---------|-----------|------|
-| 1 | Two Sum | 🟢 | https://leetcode.com/problems/two-sum/ |
-| 2 | Contains Duplicate | 🟢 | https://leetcode.com/problems/contains-duplicate/ |
-| 3 | Valid Anagram | 🟢 | https://leetcode.com/problems/valid-anagram/ |
-| 4 | Group Anagrams | 🟡 | https://leetcode.com/problems/group-anagrams/ |
-| 5 | Top K Frequent Elements | 🟡 | https://leetcode.com/problems/top-k-frequent-elements/ |
-| 6 | Product of Array Except Self | 🟡 | https://leetcode.com/problems/product-of-array-except-self/ |
-| 7 | Valid Sudoku | 🟡 | https://leetcode.com/problems/valid-sudoku/ |
-| 8 | Longest Consecutive Sequence | 🟡 | https://leetcode.com/problems/longest-consecutive-sequence/ |
-| 9 | Subarray Sum Equals K | 🟡 | https://leetcode.com/problems/subarray-sum-equals-k/ |
-| 10 | Encode and Decode Strings 🔒 | 🟡 | https://leetcode.com/problems/encode-and-decode-strings/ |
+| # | Problem | Difficulty | Link |  Completed |
+|---|---------|-----------|------|---------|
+| 1 | Two Sum | 🟢 | https://leetcode.com/problems/two-sum/ | Done |
+| 2 | Contains Duplicate | 🟢 | https://leetcode.com/problems/contains-duplicate/ | Done |
+| 3 | Valid Anagram | 🟢 | https://leetcode.com/problems/valid-anagram/ | Done |
+| 4 | Group Anagrams | 🟡 | https://leetcode.com/problems/group-anagrams/ | Done |
+| 5 | Top K Frequent Elements | 🟡 | https://leetcode.com/problems/top-k-frequent-elements/ | Done |
+| 6 | Product of Array Except Self | 🟡 | https://leetcode.com/problems/product-of-array-except-self/ | Done |
+| 7 | Valid Sudoku | 🟡 | https://leetcode.com/problems/valid-sudoku/ | Done |
+| 8 | Longest Consecutive Sequence | 🟡 | https://leetcode.com/problems/longest-consecutive-sequence/ | Done |
+| 9 | Subarray Sum Equals K | 🟡 | https://leetcode.com/problems/subarray-sum-equals-k/ | Done |
+| 10 | Encode and Decode Strings 🔒 | 🟡 | https://leetcode.com/problems/encode-and-decode-strings/ | Done |
 
 ## 2. Two Pointers
 | # | Problem | Difficulty | Link |
 |---|---------|-----------|------|
-| 11 | Valid Palindrome | 🟢 | https://leetcode.com/problems/valid-palindrome/ |
-| 12 | Two Sum II - Input Array Is Sorted | 🟡 | https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/ |
-| 13 | 3Sum | 🟡 | https://leetcode.com/problems/3sum/ |
-| 14 | Container With Most Water | 🟡 | https://leetcode.com/problems/container-with-most-water/ |
-| 15 | Trapping Rain Water | 🔴 | https://leetcode.com/problems/trapping-rain-water/ |
-| 16 | Sort Colors | 🟡 | https://leetcode.com/problems/sort-colors/ |
+| 11 | Valid Palindrome | 🟢 | https://leetcode.com/problems/valid-palindrome/ | Done |
+| 12 | Two Sum II - Input Array Is Sorted | 🟡 | https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/ | Done |
+| 13 | 3Sum | 🟡 | https://leetcode.com/problems/3sum/ | Done |
+| 14 | Container With Most Water | 🟡 | https://leetcode.com/problems/container-with-most-water/ | Done |
+| 15 | Trapping Rain Water | 🔴 | https://leetcode.com/problems/trapping-rain-water/ | Done |
+| 16 | Sort Colors | 🟡 | https://leetcode.com/problems/sort-colors/ | Done |
 
 ## 3. Sliding Window
 | # | Problem | Difficulty | Link |
