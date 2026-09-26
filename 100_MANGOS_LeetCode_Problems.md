@@ -34,13 +34,13 @@
 ## 3. Sliding Window
 | # | Problem | Difficulty | Link |
 |---|---------|-----------|------|
-| 17 | Best Time to Buy and Sell Stock | 🟢 | https://leetcode.com/problems/best-time-to-buy-and-sell-stock/ |
-| 18 | Longest Substring Without Repeating Characters | 🟡 | https://leetcode.com/problems/longest-substring-without-repeating-characters/ |
-| 19 | Longest Repeating Character Replacement | 🟡 | https://leetcode.com/problems/longest-repeating-character-replacement/ |
-| 20 | Permutation in String | 🟡 | https://leetcode.com/problems/permutation-in-string/ |
-| 21 | Minimum Window Substring | 🔴 | https://leetcode.com/problems/minimum-window-substring/ |
-| 22 | Sliding Window Maximum | 🔴 | https://leetcode.com/problems/sliding-window-maximum/ |
-| 23 | LRU Cache (design + linked list, heavily favored at Amazon/Meta) | 🟡 | https://leetcode.com/problems/lru-cache/ |
+| 17 | Best Time to Buy and Sell Stock | 🟢 | https://leetcode.com/problems/best-time-to-buy-and-sell-stock/ | Done |
+| 18 | Longest Substring Without Repeating Characters | 🟡 | https://leetcode.com/problems/longest-substring-without-repeating-characters/ | Done |
+| 19 | Longest Repeating Character Replacement | 🟡 | https://leetcode.com/problems/longest-repeating-character-replacement/ | Done |
+| 20 | Permutation in String | 🟡 | https://leetcode.com/problems/permutation-in-string/ | Done |
+| 21 | Minimum Window Substring | 🔴 | https://leetcode.com/problems/minimum-window-substring/ | Done |
+| 22 | Sliding Window Maximum | 🔴 | https://leetcode.com/problems/sliding-window-maximum/ | Done |
+| 23 | LRU Cache (design + linked list, heavily favored at Amazon/Meta) | 🟡 | https://leetcode.com/problems/lru-cache/ | Done |
 
 ## 4. Stack
 | # | Problem | Difficulty | Link |
