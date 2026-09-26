@@ -22,8 +22,8 @@
 | 10 | Encode and Decode Strings 🔒 | 🟡 | https://leetcode.com/problems/encode-and-decode-strings/ | Done |
 
 ## 2. Two Pointers
-| # | Problem | Difficulty | Link |
-|---|---------|-----------|------|
+| # | Problem | Difficulty | Link |  Completed |
+|---|---------|-----------|------|---------|
 | 11 | Valid Palindrome | 🟢 | https://leetcode.com/problems/valid-palindrome/ | Done |
 | 12 | Two Sum II - Input Array Is Sorted | 🟡 | https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/ | Done |
 | 13 | 3Sum | 🟡 | https://leetcode.com/problems/3sum/ | Done |
@@ -32,8 +32,8 @@
 | 16 | Sort Colors | 🟡 | https://leetcode.com/problems/sort-colors/ | Done |
 
 ## 3. Sliding Window
-| # | Problem | Difficulty | Link |
-|---|---------|-----------|------|
+| # | Problem | Difficulty | Link |  Completed |
+|---|---------|-----------|------|---------|
 | 17 | Best Time to Buy and Sell Stock | 🟢 | https://leetcode.com/problems/best-time-to-buy-and-sell-stock/ | Done |
 | 18 | Longest Substring Without Repeating Characters | 🟡 | https://leetcode.com/problems/longest-substring-without-repeating-characters/ | Done |
 | 19 | Longest Repeating Character Replacement | 🟡 | https://leetcode.com/problems/longest-repeating-character-replacement/ | Done |
